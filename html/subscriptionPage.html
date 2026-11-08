@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InformedPH - Newsletter Subscription</title>
+    <link rel="stylesheet" href="/css/subscriptionPageDesign.css" />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        InformedPH
+        <small>PHILIPPINE NEWS NETWORK</small>
+      </div>
+
+      <nav>
+        <a href="landingpage.html">HOME</a>
+        <a href="categoryPage.html">CATEGORIES</a>
+        <a href="aboutPage.html">ABOUT</a>
+        <a href="contactPage.html">CONTACT</a>
+        <a href="notificationPage.html">NOTIFICATION</a>
+        <a href="subscriptionPage.html" class="active">Subscribe</a>
+      </nav>
+    </header>
+
+    <main class="subscription-wrapper">
+      <div class="Subscription-Card">
+        <!-- Added id="subscriptionForm" here -->
+        <form id="subscriptionForm">
+          <h2>SUBSCRIBE</h2>
+          <p class="subtitle">
+            Get daily Philippine news directly to your inbox
+          </p>
+
+          <div class="field">
+            <label for="fullname">FULL NAME</label>
+            <input
+              type="text"
+              id="fullname"
+              name="fullname"
+              placeholder="Juan Dela Cruz"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="subemail">EMAIL ADDRESS</label>
+            <input
+              type="email"
+              id="subemail"
+              name="subemail"
+              placeholder="name@example.com"
+              required
+            />
+          </div>
+
+          <div class="field">
+            <label for="gender">GENDER</label>
+            <select id="gender" name="gender" required>
+              <option value="" disabled selected>Select your gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+              <option value="other">Other / Prefer not to say</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="birthday">BIRTHDAY</label>
+            <input type="date" id="birthday" name="birthday" required />
+          </div>
+
+          <div class="field">
+            <label for="age">AGE</label>
+            <input
+              type="number"
+              id="age"
+              name="age"
+              placeholder="25"
+              min="1"
+              max="120"
+              required
+            />
+          </div>
+
+          <button type="submit" name="userSubscribe">SUBSCRIBE NOW</button>
+
+          <div class="form-footer">
+            <span>Already subscribed?</span>
+            <a href="landingPage.html">GO TO HOME PAGE</a><br />
+            <span>Want to Unsubscribe?</span>
+            <a href="UnsubscribePage.html">Unsubscribe Here</a>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <footer>
+      <div>
+        <div class="logo">
+          InformedPH
+          <small>PHILIPPINE NEWS NETWORK</small>
+        </div>
+      </div>
+      <div>
+        <h3>Information</h3>
+        <p><a href="landingpage.html">Home</a></p>
+        <p><a href="aboutPage.html">About us</a></p>
+        <p><a href="contactPage.html">Contact</a></p>
+      </div>
+      <div>
+        <p>Informing. Connecting. Empowering Filipinos.</p>
+        <p>&copy; 2026 InformPH. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script>
+      document
+        .getElementById("subscriptionForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          // Grabbing values using correct element IDs matching the form inputs above
+          const fullName = document.getElementById("fullname").value;
+          const emailInput = document.getElementById("subemail").value;
+          const genderInput = document.getElementById("gender").value;
+          const birthdayInput = document.getElementById("birthday").value;
+          const ageInput = document.getElementById("age").value;
+
+          try {
+            const response = await fetch(
+              "https://localhost:7170/api/subscribers/subscribe",
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                // Sending the full object payload expected by your backend model
+                body: JSON.stringify({
+                  fullName: fullName,
+                  email: emailInput,
+                  gender: genderInput,
+                  birthday: birthdayInput,
+                  age: parseInt(ageInput, 10)
+                }),
+              }
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert(data.message || "Successfully subscribed!");
+              document.getElementById("subscriptionForm").reset();
+            } else if (response.status === 409) {
+              alert(data.message || "This email is already subscribed.");
+            } else {
+              alert(data.message || "Failed to subscribe. Please try again.");
+            }
+          } catch (err) {
+            console.error("Connection error:", err);
+            alert(
+              "Could not connect to the server. Make sure the backend is running.",
+            );
+          }
+        });
+    </script>
+  </body>
+</html>

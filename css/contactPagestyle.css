@@ -1,0 +1,149 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family: Arial, sans-serif;
+}
+
+
+body{
+    background:white;
+    color:#000000;
+}
+
+
+
+
+header{
+    height:80px;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    padding:20px;
+}
+
+
+.logo{
+    font-size:30px;
+    font-weight:bold;
+}
+
+
+.logo small{
+    display:block;
+    font-size:10px;
+}
+
+
+
+nav a{
+    text-decoration:none;
+    color:black;
+    margin:15px;
+    font-size:14px;
+}
+
+
+.active{
+    background:black;
+    color:white;
+    padding:15px 25px;
+}
+
+
+
+
+
+.hero{
+
+    background: black;
+    padding:70px 100px;
+    color: white;
+    
+}
+
+
+.hero p{
+    letter-spacing:5px;
+}
+
+
+.hero h1{
+    font-size:70px;
+}
+
+
+.hero h2{
+    font-size:35px;
+    margin:15px 0;
+}
+
+
+
+
+
+
+.contact-container{
+
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+
+    padding:50px 100px;
+}
+
+
+
+.card{
+
+    border:1px solid #ddd;
+    border-radius:15px;
+
+    padding:35px;
+
+    height:200px;
+}
+
+
+.icon{
+
+    font-size:40px;
+}
+
+
+.card h2{
+    margin:10px 0;
+}
+
+
+.card p{
+    color:#000000;
+    margin-bottom:15px;
+}
+
+
+
+
+
+footer {
+    background: #000000;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+    margin-top: auto; /* Pushes footer to the bottom */
+}
+
+footer p {
+    color: #dddddd;
+}
+
+footer a {
+    color: #ffffff !important;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}

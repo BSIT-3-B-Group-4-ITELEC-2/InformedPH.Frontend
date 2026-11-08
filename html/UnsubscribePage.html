@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>InformedPH - Unsubscribe</title>
+    <link rel="stylesheet" href="/css/UnsubscribePageStyle.css" />
+  </head>
+  <body>
+    <!-- Header Navigation -->
+    <header>
+      <div class="logo">
+        InformedPH
+        <small>PHILIPPINE NEWS NETWORK</small>
+      </div>
+
+      <nav>
+        <a href="landingpage.html">HOME</a>
+        <a href="categoryPage.html">CATEGORIES</a>
+        <a href="aboutPage.html">ABOUT</a>
+        <a href="contactPage.html">CONTACT</a>
+      </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main>
+      <div class="card-container">
+        <h2>UNSUBSCRIBE</h2>
+
+        <form id="unsubscribeForm">
+          <div class="form-group">
+            <label for="email">EMAIL ADDRESS</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Enter your Email Address"
+              required
+            />
+          </div>
+
+          <button type="submit" class="btn-submit">UNSUBSCRIBE</button>
+
+          <div class="card-footer-text">
+            Changed your mind?
+            <a href="subscriptionPage.html">Subscribe here</a>
+          </div>
+        </form>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <div>
+        <h1>☀ InformedPH</h1>
+        <p>PHILIPPINE NEWS NETWORK</p>
+      </div>
+
+      <div>
+        <h3>Information</h3>
+        <a href="landingpage.html">Home</a> <br />
+        <a href="aboutPage.html">About us</a><br />
+        <a href="contactPage.html">Contact</a>
+      </div>
+
+      <div>
+        <br />
+        <br />
+        <p>Informing. Connecting. Empowering Filipinos.</p>
+        <p>© 2026 InformPH. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <!-- JavaScript to handle the Unsubscribe API call -->
+    <script>
+      document
+        .getElementById("unsubscribeForm")
+        .addEventListener("submit", async function (event) {
+          event.preventDefault();
+
+          const emailInput = document.getElementById("email").value;
+
+          try {
+            const response = await fetch(
+              `https://localhost:7170/api/subscribers/unsubscribe?email=${encodeURIComponent(emailInput)}`,
+              {
+                method: "DELETE",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              },
+            );
+
+            const data = await response.json();
+
+            if (response.ok) {
+              alert(data.message || "Successfully unsubscribed.");
+              document.getElementById("unsubscribeForm").reset();
+            } else if (response.status === 404) {
+              alert(data.message || "Subscriber email not found.");
+            } else {
+              alert(data.message || "Failed to unsubscribe. Please try again.");
+            }
+          } catch (err) {
+            console.error("Connection error:", err);
+            alert(
+              "Could not connect to the server. Make sure the backend is running.",
+            );
+          }
+        });
+    </script>
+  </body>
+</html>

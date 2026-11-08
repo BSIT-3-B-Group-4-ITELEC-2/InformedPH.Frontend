@@ -1,0 +1,169 @@
+    /* 1. Global Reset & Layout Setup */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    html, body {
+        min-height: 100vh;
+    }
+
+    body {
+        background: #f9f9f9;
+        color: #000000;
+        display: flex;
+        flex-direction: column;
+    }
+    *{
+        margin:0;
+        padding:0;
+        box-sizing:border-box;
+        font-family: Arial, sans-serif;
+    }
+
+    body{
+        background:white;
+        color:#000000;
+    }
+
+    header{
+        height:80px;
+        display:flex;
+        justify-content:space-around;
+        align-items:center;
+        padding:20px;
+    }
+
+    .logo{
+        font-size:30px;
+        font-weight:bold;
+    }
+
+    .logo small{
+        display:block;
+        font-size:10px;
+    }
+
+    nav a{
+        text-decoration:none;
+        color:black;
+        margin:15px;
+        font-size:14px;
+    }
+
+    .active{
+        background:black;
+        color:white;
+        padding:15px 25px;
+    }
+    /* 3. Centered Main Wrapper */
+    .subscription-wrapper {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 20px;
+    }
+
+    /* 4. Subscription Card Container */
+    .Subscription-Card {
+        background: #ffffff;
+        width: 100%;
+        max-width: 440px;
+        padding: 40px;
+        border: 2px solid #000000;
+        box-shadow: 8px 8px 0px #000000; /* Sharp newsprint drop shadow */
+    }
+
+    .Subscription-Card h2 {
+        font-family: Georgia, serif;
+        font-size: 28px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        margin-bottom: 4px;
+    }
+
+    .Subscription-Card .subtitle {
+        font-size: 13px;
+        color: #666666;
+        margin-bottom: 24px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 12px;
+    }
+
+    /* 5. Form Fields Styling */
+    .field {
+        margin-bottom: 18px;
+    }
+
+    .field label {
+        display: block;
+        font-size: 11px;
+        font-weight: bold;
+        letter-spacing: 0.8px;
+        color: #333333;
+        margin-bottom: 6px;
+    }
+
+    .field input,
+    .field select {
+        width: 100%;
+        padding: 12px 14px;
+        border: 1px solid #000000;
+        border-radius: 0; /* Sharp newspaper corners */
+        font-size: 14px;
+        background: #ffffff;
+        outline: none;
+        transition: box-shadow 0.2s ease;
+    }
+
+    .field input:focus,
+    .field select:focus {
+        box-shadow: 0 0 0 2px #000000;
+    }
+
+    /* 6. Submit Action Button */
+    .Subscription-Card button {
+        width: 100%;
+        padding: 14px;
+        background: #000000;
+        color: #ffffff;
+        border: 1px solid #000000;
+        font-size: 14px;
+        font-weight: bold;
+        letter-spacing: 1px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        margin-top: 10px;
+    }
+
+    .Subscription-Card button:hover {
+        background: #ffffff;
+        color: #000000;
+    }
+
+    /* 7. Footer Links inside Form */
+    footer {
+    background: #000000;
+    color: #ffffff;
+    display: flex;
+    justify-content: space-around;
+    padding: 40px;
+    margin-top: auto; /* Pushes footer to the bottom */
+}
+
+footer p {
+    color: #dddddd;
+}
+
+footer a {
+    color: #ffffff !important;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
