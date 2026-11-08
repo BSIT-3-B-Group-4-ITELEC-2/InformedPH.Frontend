@@ -1,9 +1,12 @@
 <!doctype html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>InformedPH</title>
     <link rel="stylesheet" href="../css/LandingPageStyle.css" />
   </head>
+
   <body>
     <header>
       <div class="logo">
@@ -100,46 +103,23 @@
       </nav>
     </section>
 
-    <!-- LAZY LOADING SKELETON SECTION -->
-    <section class="lazy-loading-container">
-      <h2 class="section-title">LOADING MORE STORIES...</h2>
+    <!-- AUTOMATIC LOAD MORE STORIES -->
+    <section class="more-news-section">
+      <h2 class="section-title">LOAD MORE STORIES</h2>
 
-      <div class="skeleton-grid">
-        <!-- Card 1 -->
-        <div class="skeleton-card">
-          <div class="skeleton-image"></div>
-          <div class="skeleton-content">
-            <div class="skeleton-line title-line"></div>
-            <div class="skeleton-line text-line"></div>
-            <div class="skeleton-line text-line short"></div>
-          </div>
-        </div>
+      <div id="more-news-grid"></div>
 
-        <!-- Card 2 -->
-        <div class="skeleton-card">
-          <div class="skeleton-image"></div>
-          <div class="skeleton-content">
-            <div class="skeleton-line title-line"></div>
-            <div class="skeleton-line text-line"></div>
-            <div class="skeleton-line text-line short"></div>
-          </div>
-        </div>
+      <p id="news-loading"
+         style="display: none; text-align: center;">
+        Loading more stories...
+      </p>
 
-        <!-- Card 3 -->
-        <div class="skeleton-card">
-          <div class="skeleton-image"></div>
-          <div class="skeleton-content">
-            <div class="skeleton-line title-line"></div>
-            <div class="skeleton-line text-line"></div>
-            <div class="skeleton-line text-line short"></div>
-          </div>
-        </div>
-      </div>
+      <div id="scroll-trigger" style="height: 20px;"></div>
     </section>
 
     <footer>
       <div>
-        <h1>☀ InformedPH</h1>
+        <h1>☀️ InformedPH</h1>
         <p>PHILIPPINE NEWS NETWORK</p>
       </div>
 
@@ -160,5 +140,245 @@
         <p>© 2026 InformPH. All rights reserved.</p>
       </div>
     </footer>
+
+    <script>
+      // Use the same API for featured, latest, and more stories.
+      const NEWS_API = "https://localhost:7170/api/News";
+      const PAGE_SIZE = 5;
+
+      let moreNewsPage = 2;
+      let isLoadingMore = false;
+      let hasMoreNews = true;
+      let initialNewsLoaded = false;
+      let observer;
+
+      const moreNewsGrid = document.getElementById("more-news-grid");
+      const newsLoading = document.getElementById("news-loading");
+      const scrollTrigger = document.getElementById("scroll-trigger");
+
+      // FEATURED NEWS AND LATEST NEWS
+      async function loadNews() {
+        try {
+        const response = await fetch(
+  NEWS_API + "?page=1&pageSize=" + PAGE_SIZE
+);
+
+          if (!response.ok) {
+            throw new Error("Failed to load news");
+          }
+
+          const data = await response.json();
+          const articles = data.items || [];
+
+          if (articles.length === 0) {
+            console.log("No news articles available.");
+            newsLoading.textContent = "No news articles available.";
+            newsLoading.style.display = "block";
+            hasMoreNews = false;
+            return;
+          }
+
+          // Featured article
+          const featured = articles[0];
+          const featuredCard = document.querySelector(".article-card");
+
+          featuredCard.querySelector(".title").textContent =
+            featured.title || "Untitled News";
+
+          featuredCard.querySelector(".subtitle").textContent =
+            featured.summary || "No summary available.";
+
+          if (featured.url) {
+            featuredCard.style.cursor = "pointer";
+            featuredCard.addEventListener("click", () => {
+              window.open(
+                featured.url,
+                "_blank",
+                "noopener,noreferrer"
+              );
+            });
+          }
+
+          // Latest news (next 4 articles)
+          const newsItems = document.querySelectorAll(
+            ".latest-news .news-item"
+          );
+
+          newsItems.forEach((item, index) => {
+            const article = articles[index + 1];
+
+            if (!article) {
+              item.style.display = "none";
+              return;
+            }
+
+            item.querySelector(".news-title").textContent =
+              article.title || "Untitled News";
+
+            item.querySelector(".news-meta").textContent =
+              article.publishedAt
+                ? new Date(article.publishedAt).toLocaleDateString("en-PH", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                  })
+                : "";
+
+            if (article.url) {
+              item.style.cursor = "pointer";
+              item.addEventListener("click", () => {
+                window.open(
+                  article.url,
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+              });
+            }
+          });
+
+          initialNewsLoaded = true;
+
+          if (articles.length < PAGE_SIZE) {
+            hasMoreNews = false;
+          }
+
+        } catch (error) {
+          console.error("News API Error:", error);
+          newsLoading.textContent =
+            "Unable to load news. Please try again later.";
+          newsLoading.style.display = "block";
+          hasMoreNews = false;
+        }
+      }
+
+      // AUTOMATIC LOAD MORE STORIES
+      async function loadMoreStories() {
+        if (
+          isLoadingMore ||
+          !hasMoreNews ||
+          !initialNewsLoaded
+        ) {
+          return;
+        }
+
+        isLoadingMore = true;
+        newsLoading.textContent = "Loading more stories...";
+        newsLoading.style.display = "block";
+
+        try {
+         const response = await fetch(
+  NEWS_API + "?page=" + moreNewsPage + "&pageSize=" + PAGE_SIZE
+);
+
+          if (!response.ok) {
+            throw new Error("Failed to load more news");
+          }
+
+          const data = await response.json();
+          const articles = data.items || [];
+
+          if (articles.length === 0) {
+            hasMoreNews = false;
+            observer.disconnect();
+            return;
+          }
+
+          articles.forEach((article) => {
+            const card = document.createElement("article");
+            card.className = "news-item";
+
+            const thumbnail = document.createElement("div");
+            thumbnail.className = "thumbnail-placeholder";
+
+            const content = document.createElement("div");
+            content.className = "news-content";
+
+            const title = document.createElement("h3");
+            title.className = "news-title";
+            title.textContent =
+              article.title || "Untitled News";
+
+            const meta = document.createElement("p");
+            meta.className = "news-meta";
+
+            meta.textContent = article.publishedAt
+              ? new Date(article.publishedAt).toLocaleDateString("en-PH", {
+                  year: "numeric",
+                  month: "short",
+                  day: "numeric"
+                })
+              : "";
+
+            content.appendChild(title);
+            content.appendChild(meta);
+
+            card.appendChild(thumbnail);
+            card.appendChild(content);
+
+            if (article.url) {
+              card.style.cursor = "pointer";
+
+              card.addEventListener("click", () => {
+                window.open(
+                  article.url,
+                  "_blank",
+                  "noopener,noreferrer"
+                );
+              });
+            }
+
+            moreNewsGrid.appendChild(card);
+          });
+
+          moreNewsPage++;
+
+          if (articles.length < PAGE_SIZE) {
+            hasMoreNews = false;
+            observer.disconnect();
+          }
+
+        } catch (error) {
+          console.error("Load More Error:", error);
+          newsLoading.textContent =
+            "Unable to load more stories. Please refresh to try again.";
+          hasMoreNews = false;
+          observer.disconnect();
+
+        } finally {
+          isLoadingMore = false;
+
+          if (
+            newsLoading.textContent === "Loading more stories..."
+          ) {
+            newsLoading.style.display = "none";
+          }
+        }
+      }
+
+      // Detect when the user scrolls near the end.
+      observer = new IntersectionObserver((entries) => {
+        if (
+          entries[0].isIntersecting &&
+          initialNewsLoaded &&
+          hasMoreNews
+        ) {
+          loadMoreStories();
+        }
+      }, {
+        rootMargin: "0px 0px 200px 0px",
+        threshold: 0
+      });
+
+      // Initialize the page.
+      async function initializeNews() {
+        await loadNews();
+
+        if (initialNewsLoaded && hasMoreNews) {
+          observer.observe(scrollTrigger);
+        }
+      }
+
+      initializeNews();
+    </script>
   </body>
 </html>
