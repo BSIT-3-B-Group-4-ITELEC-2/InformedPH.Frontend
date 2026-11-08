@@ -1,154 +1,4 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>InformedPH - Notification Schedule</title>
-    <link rel="stylesheet" href="../css/notificationPageStyle.css" />
-  </head>
-  <body>
-    <!-- HEADER -->
-    <header>
-      <div class="logo">
-        InformedPH
-        <small>PHILIPPINE NEWS NETWORK</small>
-      </div>
-      <nav>
-        <a href="landingPage.html">HOME</a>
-        <a href ="categoryPage.html">CATEGORIES</a>
-        <a href="aboutPage.html">ABOUT</a>
-        <a href="contactPage.html">CONTACT</a>
-        <a class="active" href="notificationPage.html">NOTIFICATION</a>
-        
-      </nav>
-    </header>
-
-    <!-- MAIN NOTIFICATION CONTENT -->
-    <main>
-      <div class="notification-widget">
-        <div class="widget-header">
-          <div class="widget-title">DAILY NOTIFICATION SCHEDULE</div>
-          <div class="widget-subtitle">
-            Select the time you wish to receive daily news updates.
-          </div>
-        </div>
-
-        <div class="picker-row">
-          <!-- Hour Select -->
-          <div class="picker-group">
-            <label for="alarmHour">Hour</label>
-            <select id="alarmHour" class="styled-select">
-              <option value="1">01</option>
-              <option value="2">02</option>
-              <option value="3">03</option>
-              <option value="4">04</option>
-              <option value="5">05</option>
-              <option value="6">06</option>
-              <option value="7">07</option>
-              <option value="8">08</option>
-              <option value="9" selected>09</option>
-              <option value="10">10</option>
-              <option value="11">11</option>
-              <option value="12">12</option>
-            </select>
-          </div>
-
-          <!-- Minute Select -->
-          <div class="picker-group">
-            <label for="alarmMinute">Minute</label>
-            <select id="alarmMinute" class="styled-select">
-              <option value="00" selected>00</option>
-              <option value="15">15</option>
-              <option value="30">30</option>
-              <option value="45">45</option>
-            </select>
-          </div>
-
-          <!-- AM/PM Select -->
-          <div class="picker-group">
-            <label for="alarmPeriod">Period</label>
-            <select id="alarmPeriod" class="styled-select">
-              <option value="AM">AM</option>
-              <option value="PM" selected>PM</option>
-            </select>
-          </div>
-        </div>
-
-        <button
-          type="button"
-          class="btn-save-alarm"
-          onclick="saveNotificationSchedule()"
-        >
-          SET NOTIFICATION
-        </button>
-      </div>
-    </main>
-
-    <!-- FOOTER -->
-    <footer>
-      <div>
-        <h1>☀ InformedPH</h1>
-        <p>PHILIPPINE NEWS NETWORK</p>
-      </div>
-
-      <div>
-        <h3>Information</h3>
-        <br />
-
-        <p><a href="landingpage.html">Home</a></p>
-        <p><a href="aboutPage.html">About us</a></p>
-        <p><a href="contactPage.html">Contact</a></p>
-      </div>
-
-      <div>
-        <br />
-        <br />
-        <p>Informing. Connecting. Empowering Filipinos.</p>
-
-        <p>© 2026 InformPH. All rights reserved.</p>
-      </div>
-    </footer>
-
-    
-    <script>
-      // Function to handle 12-hour to 24-hour time conversion
-      function saveNotificationSchedule() {
-        const hourVal = document.getElementById("alarmHour").value;
-        const minuteVal = document.getElementById("alarmMinute").value;
-        const periodVal = document.getElementById("alarmPeriod").value;
-
-        let hour = parseInt(hourVal, 10);
-
-        // Convert 12-hour format to 24-hour format (00:00:00 to 23:59:59)
-        if (periodVal === "PM" && hour < 12) {
-          hour += 12; // e.g., 9 PM -> 21
-        } else if (periodVal === "AM" && hour === 12) {
-          hour = 0; // 12 AM (Midnight) -> 00
-        }
-
-        // Ensure leading zeros (e.g., 9 -> "09")
-        const formattedHour = String(hour).padStart(2, "0");
-        const time24Hour = `${formattedHour}:${minuteVal}:00`;
-
-        // The converted 24-hour time string is stored here (e.g., "21:00:00")
-        console.log("Converted 24-Hour Time:", time24Hour);
-        alert(`Notification time prepared: ${time24Hour}`);
-
-        // ==========================================
-        // TODO: Your teammate can add their API call here
-        // Example:
-        // fetch('YOUR_TEAMMATE_API_ENDPOINT', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ time: time24Hour })
-        // })
-        // ==========================================
-      }
-    </script>
-  </body>
-</html>
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -165,10 +15,10 @@
       </div>
       <nav>
         <a href="landingpage.html">HOME</a>
-        <a href ="categoryPage.html">CATEGORIES</a>
+        <a href="categoryPage.html">CATEGORIES</a>
         <a href="aboutPage.html">ABOUT</a>
         <a href="contactPage.html">CONTACT</a>
-        <a href ="notificationPage.html">NOTIFICATION</a>
+        <a href="notificationPage.html">NOTIFICATION</a>
         <a href="subscriptionPage.html" class="login-btn active">SUBSCRIBE</a>
       </nav>
     </header>
@@ -255,7 +105,6 @@
         </h3>
         <a href="landingpage.html">Home</a> <br />
         <a href="aboutPage.html">About us</a> <br />
-
         <a href="contactPage.html">Contact</a>
       </div>
       <div>
@@ -264,156 +113,91 @@
       </div>
     </footer>
 
-    
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-      // Function to handle 12-hour to 24-hour time conversion
-      function saveNotificationSchedule() {
+      const API_URL = "https://localhost:7170/api/Schedule";
+
+      // GET Schedule on page load
+      async function fetchSchedule() {
+        try {
+          const response = await fetch(API_URL, {
+            method: "GET",
+            headers: { Accept: "application/json" },
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP Error ${response.status}`);
+          }
+
+          const data = await response.json();
+          console.log("Schedule Data Received:", data);
+
+          if (data && data.executionTime) {
+            populateDropdowns(data.executionTime);
+          }
+        } catch (error) {
+          console.error("Failed to connect to Schedule API:", error);
+        }
+      }
+
+      // Populate 12-hour dropdowns from 24-hour time string
+      function populateDropdowns(time24) {
+        const parts = time24.split(":");
+        let hour = parseInt(parts[0], 10);
+        const minute = parts[1];
+        let period = "AM";
+
+        if (hour >= 12) {
+          period = "PM";
+          if (hour > 12) hour -= 12;
+        } else if (hour === 0) {
+          hour = 12;
+        }
+
+        document.getElementById("alarmHour").value = String(hour);
+        document.getElementById("alarmMinute").value = minute;
+        document.getElementById("alarmPeriod").value = period;
+      }
+
+      // PUT Schedule on SET NOTIFICATION button click
+      async function saveNotificationSchedule() {
         const hourVal = document.getElementById("alarmHour").value;
         const minuteVal = document.getElementById("alarmMinute").value;
         const periodVal = document.getElementById("alarmPeriod").value;
 
         let hour = parseInt(hourVal, 10);
 
-        // Convert 12-hour format to 24-hour format (00:00:00 to 23:59:59)
         if (periodVal === "PM" && hour < 12) {
-          hour += 12; // e.g., 9 PM -> 21
+          hour += 12;
         } else if (periodVal === "AM" && hour === 12) {
-          hour = 0; // 12 AM (Midnight) -> 00
+          hour = 0;
         }
 
-        // Ensure leading zeros (e.g., 9 -> "09")
         const formattedHour = String(hour).padStart(2, "0");
         const time24Hour = `${formattedHour}:${minuteVal}:00`;
 
-        // The converted 24-hour time string is stored here (e.g., "21:00:00")
-        console.log("Converted 24-Hour Time:", time24Hour);
-        alert(`Notification time prepared: ${time24Hour}`);
+        console.log("Sending executionTime:", time24Hour);
 
-        // ==========================================
-        // TODO: Your teammate can add their API call here
-        // Example:
-        // fetch('YOUR_TEAMMATE_API_ENDPOINT', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify({ time: time24Hour })
-        // })
-        // ==========================================
+        try {
+          const response = await fetch(API_URL, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ executionTime: time24Hour }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Failed to update schedule");
+          }
+
+          const result = await response.json();
+          alert(result.message || "Schedule updated successfully!");
+        } catch (error) {
+          console.error("Error updating schedule:", error);
+          alert("Failed to update notification schedule.");
+        }
       }
 
+      document.addEventListener("DOMContentLoaded", fetchSchedule);
     </script>
   </body>
 </html>
-
-<script>
-async function fetchSchedule() {
-   
-    const API_URL = 'http://localhost:5162/api/schedule'; 
-    const container = document.getElementById('schedule-container');
-
-    // Show loading state in UI
-    if (container) {
-        container.innerHTML = '<p class="loading">Loading schedule...</p>';
-    }
-
-    try {
-        const response = await fetch(API_URL, {
-            method: 'GET',
-            headers: { 
-                'Accept': 'application/json' 
-            }
-        });
-
-        if (!response.ok) {
-            throw new Error(`HTTP Error ${response.status}: ${response.statusText}`);
-        }
-
-        const data = await response.json();
-        console.log("Schedule Data Received:", data);
-
-       
-        renderSchedule(data);
-        return data;
-
-    } catch (error) {
-        console.error("Failed to connect to Schedule API:", error);
-        if (container) {
-            container.innerHTML = `<p class="error">Unable to load schedule. (${error.message})</p>`;
-        }
-    }
-}
-
-
-function renderSchedule(items) {
-    const container = document.getElementById('schedule-container');
-    if (!container) return;
-
-    if (!Array.isArray(items) || items.length === 0) {
-        container.innerHTML = '<p>No scheduled events available.</p>';
-        return;
-    }
-
-    container.innerHTML = items.map(item => `
-        <div class="schedule-item">
-            <h3>${item.title || item.name || 'Untitled Event'}</h3>
-            <p><strong>Time:</strong> ${item.time || item.scheduleTime || 'N/A'}</p>
-            <p>${item.description || ''}</p>
-        </div>
-    `).join('');
-}
-
-
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fetchSchedule);
-} else {
-    fetchSchedule();
-}
-</script>
-
-<script>
-  async function saveNotificationSchedule() {
-    const API_URL = "http://localhost:5162/api/Schedule";
-
-    
-    const hourVal = document.getElementById("alarmHour").value;
-    const minuteVal = document.getElementById("alarmMinute").value;
-    const periodVal = document.getElementById("alarmPeriod").value;
-
-    let hour = parseInt(hourVal, 10);
-
-    
-    if (periodVal === "PM" && hour < 12) {
-      hour += 12; 
-    } else if (periodVal === "AM" && hour === 12) {
-      hour = 0;  
-    }
-
-    
-    const formattedHour = String(hour).padStart(2, "0");
-    const time24Hour = `${formattedHour}:${minuteVal}:00`;
-
-  
-    console.log("Sending executionTime:", time24Hour);
-
-    try {
-      const response = await fetch(API_URL, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          executionTime: time24Hour,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update schedule");
-      }
-
-      const result = await response.json();
-      alert(result.message || "Schedule updated successfully!");
-    } catch (error) {
-      console.error("Error updating schedule:", error);
-      alert("Failed to update notification schedule.");
-    }
-  }
-</script>
